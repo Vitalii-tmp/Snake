@@ -10,11 +10,15 @@
 
 SDL_Window* Window = NULL;
 SDL_Renderer* renderer = NULL;
+
 int main(int argc, char* args[]) {
+	
+	
+	game_manager game;
 
-	map Map;
-	Map.create_window(Window);
+	game.perform_game_session(Window, renderer);
 
+	SDL_Delay(2000);
 
 
 
