@@ -1,10 +1,11 @@
-//#pragma once
-//#include <string>
-//#include <SDL.h>
-//#include <iostream>
-//#include <vector>
-//#include <SDL_image.h>
-//
+#pragma once
+#include <string>
+#include <SDL.h>
+#include <iostream>
+#include <vector>
+#include <SDL_image.h>
+
+
 //const int SCREEN_WIDTH = 800;
 //const int SCREEN_HEIGHT = 800;
 //const int BLOCK_WIDTH = 16;
@@ -21,28 +22,30 @@
 //
 //static enum Direction {STOP = 0,LEFT,RIGHT,UP,DOWN};
 //static Direction dir;
-//
-////moves
-//
-////first direction/move
-//
-//
-//
-//
-//
-//class game_manager
-//{
-//	void Setup();
-//	void Draw();
-//	void Input();
-//	void Logic();
-//	
-//public:
-//	
-//	void Run();
-//	
-//
-//	
-//};
+
+//moves
+
+//first direction/move
+
+
+
+
+
+class game_manager
+{
+	void Setup();
+	void Draw();
+	void Input();
+	void Logic();
+	
+public:
+	
+	void Run();
+
+	void Free();
+	
+
+	
+};
 
 
