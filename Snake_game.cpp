@@ -1,119 +1,228 @@
 #include "Snake_game.h"
 
 
+#pragma once
+#include <string>
+#include <SDL.h>
+#include <iostream>
+#include <vector>
+#include <SDL_image.h>
+
+const int SCREEN_WIDTH = 400;
+const int SCREEN_HEIGHT = 400;
+const int BLOCK_WIDTH = 16;
+const int BLOCK_HEIGHT = 16;
+
+ SDL_Renderer* renderer = nullptr;
+ SDL_Window* Window = nullptr;
+
+ int headX, headY;
+ int fruitX, fruitY;
+ int emptyX, emptyY;
+ int score;
+ bool game_over = false;
+
+ enum Direction { STOP = 0, LEFT, RIGHT, UP, DOWN };
+ Direction dir;
+ 
+ //std::vector<int> tailX;
+ //std::vector<int> tailY;
+ //int lenth_of_teil;
+//moves
+
+//first direction/move
 
 
-void game_list::write_record(int score)
+
+
+
+
+	
+
+
+
+void Setup()
 {
-}
-
-void game_manager::perform_game_session(SDL_Window* window, SDL_Renderer* renderer)
-{
-	//create window and renderer
-	window = SDL_CreateWindow("Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	Window = SDL_CreateWindow("Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED);
 
 	//init
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 		std::cout << " Error!!! \n", SDL_GetError();
 	}
+	game_over = false;
 
-	//add background
-	SDL_Surface* background = IMG_Load("background.png");
-	SDL_Texture* backgroung_texture;
-	backgroung_texture = SDL_CreateTextureFromSurface(renderer, background);
-	SDL_RenderCopy(renderer, backgroung_texture, NULL, NULL);
-	SDL_RenderPresent(renderer);
-
-	SDL_FreeSurface(background);
-	SDL_DestroyTexture(backgroung_texture);
-	backgroung_texture = NULL;
+	dir = STOP;
+	headX = 16;
+	headY = 16;
+	fruitX = rand() % 24 * 16;
+	fruitY = rand() % 24 * 16;
 	
-	//fill field empty blocks
-	field field;
-	field.fill_field();
+	score = 0;
+}
+
+void Draw()
+{
+
+	/*create window and renderer*/
+	
+
+	SDL_Rect rect;
+	rect.w = BLOCK_WIDTH;
+	rect.h = BLOCK_HEIGHT;
+
+	/////////
+	for (int i = 0; i < SCREEN_HEIGHT; i += BLOCK_HEIGHT) {
+
+		for (int j = 0; j < SCREEN_WIDTH; j += BLOCK_WIDTH) {
+			
+			
+
+			if (i == headY && j == headX) {
+				
+
+				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+				rect.x = headX;
+				rect.y = headY;
+				SDL_RenderFillRect(renderer, &rect);
+
+			}
+			else if (i == fruitY && j == fruitX) {
+				
+
+				SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+				rect.x = fruitX;
+				rect.y = fruitY;
+				SDL_RenderFillRect(renderer, &rect);
+
+			}
+			else {
+				
+				emptyY = i;
+				emptyX = j;
+
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+				rect.x = emptyX;
+				rect.y = emptyY;
+				SDL_RenderFillRect(renderer, &rect);
+
+			}
+			SDL_RenderPresent(renderer);
+
+			
+			////////////
+			
+			
+
+		}
+	}
+
 
 }
 
-
-
-void game_manager::clean_memmory()
+void Input()
 {
-	
-}
-
-
-
-void fruit::replace_fruit()
-{
-	
-		int x, y;
-		while (1)
+	SDL_Event e;
+	while (SDL_PollEvent(&e))
+	{
+		if (e.type == SDL_QUIT)
 		{
-			x = rand() % BLOCK_WIDTH;
-			y = rand() % BLOCK_HEIGHT;
-
-			if (block[x][y] == Block::empty)
+			game_over = true;
+		}
+		else if (e.type == SDL_KEYDOWN)
+		{
+			switch (e.key.keysym.sym)
 			{
-				block[x][y] = Block::fruit;
-				fruit.x = x;
-				fruit.y = y;
+			case SDLK_w:
+				dir = UP;
+				break;
+
+			case SDLK_s:
+				dir = DOWN;
+				break;
+
+			case SDLK_d:
+				dir = RIGHT;
+				break;
+
+			case SDLK_a:
+				dir =LEFT;
 				break;
 			}
 		}
-	
+	}
 }
 
-void field::fill_field()
+void Logic()
 {
-	for (int i = 0; i < BLOCK_WIDTH; ++i)
-		for (int j = 0; j < BLOCK_HEIGHT; ++j)
-		{
-			block[i][j] = Block::empty;
-		}
+	/*int prewX = tailX[0];
+	int prewY = tailY[0];
+	int tmpX, tmpY;
+
+	for (int i = 1; i < lenth_of_teil; ++i) {
+		tmpX = tailX[i];
+		tmpY = tailY[i];
+		tailX[i] = prewX;
+		tailY[i] = prewY;
+		prewX = tmpX;
+		prewY=tmpY;
+	}*/
+
+	switch (dir) {
+	case LEFT:
+		headX -= BLOCK_WIDTH;
+		break;
+	case RIGHT:
+		headX += BLOCK_WIDTH;
+		break;
+	case UP:
+		headY -= BLOCK_HEIGHT;
+		break;
+	case DOWN:
+		headY += BLOCK_HEIGHT;
+		break;
+	}
+
+	if (headX == fruitX && headY == fruitY) {
+		fruitX = rand() % 24 * 16;
+		fruitY = rand() % 24 * 16;
+		score += 10;
+		/*lenth_of_teil++;*/
+	}
+
+	if (headX > SCREEN_WIDTH || headX<0 || headY>SCREEN_HEIGHT || headY < 0) {
+		game_over = true;
+	}
 }
 
-int snake::grow_snake(int size)
-{
-	snake_size += size;
+//void game_manager::Run()
+//{
+//	Setup();
+//	while (!game_over) {
+//		Draw();
+//		Input();
+//		Logic();
+//	}
+//}
+
+
+
+int main(int argc, char* args[]) {
+
+	srand(time(NULL));
+	Setup();
+	while (!game_over) {
+		Draw();
+		Input();
+		Logic();
+	}
+
 	return 0;
+
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(Window);
 }
 
-void snake::Moves()
-{
 
-	SDL_Event e;
-	    while (SDL_PollEvent(&e))
-	    {
-	        if (e.type == SDL_QUIT)
-	        {
-	           quit = false;
-	        }
-	        else if (e.type == SDL_KEYDOWN)
-	        {
-	            switch (e.key.keysym.sym)
-	            {
-	            case SDLK_UP:
-	                if (last_direction != Move::down || snake_size == 1)
-	                    direction = Move::up;
-	                break;
-	
-	            case SDLK_DOWN:
-	                if (last_direction != Move::up || snake_size == 1)
-	                    direction = Move::down;
-	                break;
-	
-	            case SDLK_LEFT:
-	                if (last_direction != Move::right || snake_size == 1)
-	                    direction = Move::left;
-	                break;
-	
-	            case SDLK_RIGHT:
-	                if (last_direction != Move::left || snake_size == 1)
-	                    direction = Move::right;
-	                break;
-	            }
-	        }
-	    }
-}
+
