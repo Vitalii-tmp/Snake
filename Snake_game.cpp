@@ -290,7 +290,6 @@ void game_manager::Run()
 	}
 	
 	file.close();
-	interface.free();
 }
 
 //method to clear memmory
@@ -299,7 +298,7 @@ void game_manager::Free() {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyTexture(fruitTexture);
 	SDL_DestroyTexture(gameOverTextTexture);
-	interface.free();
+	
 
 	SDL_Quit();
 }

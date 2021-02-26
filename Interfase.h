@@ -16,7 +16,6 @@ public:
 	void loadMedia();
 	void drawScore(SDL_Renderer* renderer, int x, int y, int WIDTH, int HEIGHT, int score);
 	void drawGameOver(SDL_Renderer* renderer, int x, int y, int SCREEN_WIDTH, int SCREEN_HEIGHT);
-	void free();
 	void drawRecord(SDL_Renderer* renderer, int x, int y, int WIDTH, int HEIGHT, int score);
 	
 };
